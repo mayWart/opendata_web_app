@@ -24,6 +24,13 @@ if (!is_array($stats))
 // ===== DATA PREPARATION FOR DISPLAY =====
 $sourceDatasets = $datasets;
 
+// --- STATISTIK UMUM PORTAL (Dari contoh gambar) ---
+$totalDatasetsCount = count($sourceDatasets); // Gunakan jumlah dataset yang dimuat
+$totalKementerian = 70; // Dari image_db87bc.png
+$totalProvinsi = 31;    // Dari image_db87bc.png
+$totalKabKota = 273;    // Dari image_db87bc.png
+
+
 $populer = [];
 foreach ($sourceDatasets as $d) {
     $id = $d['id'];
@@ -38,6 +45,21 @@ $top5Terbaru = array_slice($sourceDatasets, 0, 5);
 $search = $_GET['q'] ?? '';
 $topic_filter = $_GET['topic'] ?? '';
 $filteredDatasets = $sourceDatasets;
+
+// =================================================================
+// 1. FIX: DEFINISI TOPIK GLOBAL (DIPINDAH KE ATAS)
+// =================================================================
+$topics = [
+    'ekonomi' => ["name" => "Ekonomi dan Industri", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18M9.75 3v18M14.25 3v18M18.75 3v18M3.75 6.75h16.5" /></svg>'],
+    'lingkungan' => ["name" => "Lingkungan dan SDA", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>'],
+    'budaya' => ["name" => "Budaya dan Agama", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" /></svg>'],
+    'sosial' => ["name" => "Sosial & Kesejahteraan", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.962a3.75 3.75 0 015.404 0L18 18.72m-7.5-2.962a3.75 3.75 0 00-5.404 0L6 18.72m-3.375 0a3 3 0 002.72 4.682A9.095 9.095 0 006 21a9.095 9.095 0 003.375-2.28m12.844-3.482a3.75 3.75 0 00-5.404-5.404M6.75 12a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0z" /></svg>'],
+    'pembangunan' => ["name" => "Pembangunan Daerah", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M12 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" /></svg>'],
+    'pendidikan' => ["name" => "Pendidikan", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.148 1.867 1.074 1.867 2.176v2.268a2.5 2.5 0 01-2.5 2.5H8.25a2.5 2.5 0 01-2.5-2.5v-2.268c0-1.102.83-2.028 1.867-2.176A48.347 48.347 0 0112 12.75z" /></svg>'],
+    'pemerintahan' => ["name" => "Pemerintahan", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.311a7.5 7.5 0 01-7.5 0c-1.421-.218-2.68-.668-3.75-1.245M12 12.75V15m0 0V15m0 2.25v-2.25m0 2.25c-1.421.218-2.68-.668-3.75 1.245A7.5 7.5 0 0112 15m0 0c1.421-.218 2.68-.668 3.75-1.245A7.5 7.5 0 0012 15m-3.75-.75a3.75 3.75 0 017.5 0" /></svg>'],
+    'ketertiban' => ["name" => "Ketertiban", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.602-3.751A11.959 11.959 0 0112 2.714z" /></svg>'],
+    'pertahanan' => ["name" => "Pertahanan", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v18h16.5V3H3.75zm8.25 9.75h4.5v-.75h-4.5v.75zm0 2.25h4.5v-.75h-4.5v.75zm0 2.25h4.5v-.75h-4.5v.75zM9 9.75h-1.5v-1.5H9v1.5z" /></svg>'],
+];
 
 // --- Kamus Pemetaan Topik (Indonesia -> Inggris) ---
 $topicMap = [
@@ -119,6 +141,125 @@ if ($search) {
     });
 }
 
+// ===== HITUNG STATISTIK TOPIK UNTUK GRAFIK (AMAN KARENA $topics SUDAH DIATAS) =====
+$topicCounts = [];
+$topicsToProcess = $sourceDatasets;
+
+foreach ($topicsToProcess as $d) {
+    // Ambil kata kunci dari judul dan tags
+    $haystack = strtolower($d['title'] . ' ' . ($d['notes'] ?? ''));
+    if (!empty($d['tags'])) {
+        foreach ($d['tags'] as $tag) {
+            if (isset($tag['name']))
+                $haystack .= ' ' . strtolower($tag['name']);
+        }
+    }
+
+    // Cek kecocokan untuk setiap topik di $topicMap
+    foreach ($topicMap as $topicKey => $keywords) {
+        foreach ($keywords as $kw) {
+            if (stripos($haystack, $kw) !== false) {
+                // Tambahkan hitungan, lalu pindah ke dataset berikutnya
+                $topicCounts[$topicKey] = ($topicCounts[$topicKey] ?? 0) + 1;
+                continue 3; // Lanjut ke dataset berikutnya
+            }
+        }
+    }
+}
+
+// Urutkan dan ambil 5 teratas
+arsort($topicCounts);
+$top5TopicCounts = array_slice($topicCounts, 0, 5, true);
+
+// Hitung max count untuk persentase bar relatif
+$maxTopicCount = max($top5TopicCounts) ?: 1;
+
+// Gabungkan dengan nama dan ikon topik
+$top5TopicsData = [];
+foreach ($top5TopicCounts as $key => $count) {
+    if (isset($topics[$key])) {
+        $top5TopicsData[] = [
+            'name' => $topics[$key]['name'],
+            'count' => $count,
+            'icon' => $topics[$key]['icon'],
+            'percentage' => round(($count / $maxTopicCount) * 100), // Persentase bar relatif
+        ];
+    }
+}
+// END OF STATISTIK TOPIK
+
+// =================================================================
+// 2. LOGIKA STATISTIK FORMAT FILE (BARU DITAMBAHKAN)
+// =================================================================
+$formatCounts = [];
+$formatMap = [
+    'CSV' => ['csv', 'text/csv'],
+    'XLSX' => ['xlsx', 'xls', 'spreadsheet', 'excel'],
+    'API/JSON' => ['api', 'json', 'xml', 'application/json', 'geo-json'],
+    'SHP/Geo' => ['shp', 'geojson', 'kml', 'peta', 'geographic'],
+    'PDF/Dokumen' => ['pdf', 'doc', 'docx', 'document'],
+    'Gambar/Media' => ['jpg', 'png', 'jpeg', 'tif'],
+    'Lainnya' => [],
+];
+
+foreach ($sourceDatasets as $d) {
+    if (!isset($d['resources']) || !is_array($d['resources'])) {
+        continue;
+    }
+
+    $formats = [];
+    foreach ($d['resources'] as $resource) {
+        $format = strtoupper($resource['format'] ?? '');
+
+        if (empty($format) && isset($resource['url'])) {
+            $path = parse_url($resource['url'], PHP_URL_PATH);
+            $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+            $format = $ext;
+        }
+
+        if (!empty($format)) {
+            $formats[] = $format;
+        }
+    }
+
+    $countedCategories = [];
+    foreach ($formats as $format) {
+        $foundKey = 'Lainnya';
+        $formatLower = strtolower($format);
+
+        foreach ($formatMap as $key => $keywords) {
+            if (in_array($formatLower, $keywords) || stripos($formatLower, strtolower($key)) !== false) {
+                $foundKey = $key;
+                break;
+            }
+        }
+
+        // Pastikan hanya menghitung satu kali per dataset, meskipun memiliki banyak format di kategori yang sama
+        if (!in_array($foundKey, $countedCategories)) {
+            $formatCounts[$foundKey] = ($formatCounts[$foundKey] ?? 0) + 1;
+            $countedCategories[] = $foundKey;
+        }
+    }
+}
+
+$formatDataForChart = [];
+$maxFormatCount = max($formatCounts) ?: 1;
+
+if (!empty($formatCounts)) {
+    arsort($formatCounts);
+    foreach ($formatCounts as $format => $count) {
+        $percentage = round(($count / $maxFormatCount) * 100);
+
+        $formatDataForChart[] = [
+            'name' => $format,
+            'count' => $count,
+            'percentage' => $percentage,
+        ];
+    }
+}
+// END OF FORMAT FILE
+
+
 // ===== PAGINATION LOGIC =====
 $perPage = 9;
 $total = count($filteredDatasets);
@@ -140,7 +281,9 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-
+        *{
+            scroll-behavior : smooth
+        }
         body {
             font-family: 'Poppins', sans-serif;
             opacity: 0;
@@ -211,6 +354,9 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
         .parallax {
             transition: transform 0.6s ease-out;
         }
+        
+        /* Style untuk Bar Chart Animation */
+        .transition-all { transition: all 1s ease-out; }
     </style>
 </head>
 
@@ -229,8 +375,8 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
                 </a>
                 <nav class="hidden md:flex space-x-8">
                     <a href="index.php" class="text-sm font-medium text-gray-500 hover:text-red-600">Home</a>
-                    <a href="#" class="text-sm font-medium text-gray-500 hover:text-red-600">Instansi</a>
-                    <a href="#" class="text-sm font-medium text-gray-500 hover:text-red-600">Publikasi</a>
+                    <a href="#all-datasets" class="text-sm font-medium text-gray-500 hover:text-red-600">Dataset</a>
+                    <a href="#all_data" class="text-sm font-medium text-gray-500 hover:text-red-600">Topik Data</a>
                 </nav>
             </div>
         </div>
@@ -254,8 +400,7 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
                                 </svg>
-                                <span
-                                    class="font-semibold"><?= number_format(count($sourceDatasets)) ?>+</span>&nbsp;Dataset
+                                <span class="font-semibold"><?= number_format($totalDatasetsCount) ?>+</span>&nbsp;Dataset
                             </div>
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-red-500" fill="none"
@@ -263,7 +408,7 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                 </svg>
-                                <span class="font-semibold">70+</span>&nbsp;Instansi
+                                <span class="font-semibold"><?= $totalKementerian ?>+</span>&nbsp;
                             </div>
                         </div>
                     </div>
@@ -297,26 +442,89 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
             </div>
         </section>
 
+        <section class="py-16 bg-white" data-animate>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">
+                    Statistik Distribusi Dataset
+                </h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                    <div class="p-6 bg-gray-50 rounded-xl shadow-lg border border-gray-200 h-full">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                            <svg class="w-6 h-6 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l2-2 2 2 2-2 2 2m-6-4h4m10 6v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16-4H4a2 2 0 01-2-2V7a2 2 0 012-2h16a2 2 0 012 2v3a2 2 0 01-2 2z"></path></svg>
+                            Top 5 Dataset Berdasarkan Topik
+                        </h3>
+                        <div class="space-y-4">
+                            <?php if (!empty($top5TopicsData)): ?>
+                                <?php foreach ($top5TopicsData as $data): ?>
+                                    <div class="flex items-center">
+                                        <span class="w-2/5 text-sm font-medium text-gray-700 flex items-center">
+                                            <span class="text-red-600 mr-2 h-5 w-5"><?= $data['icon'] ?></span>
+                                            <?= htmlspecialchars($data['name']) ?>
+                                        </span>
+                                        <div class="w-3/5 flex items-center">
+                                            <div class="flex-grow bg-gray-200 rounded-full h-2.5 mr-3">
+                                                <div class="bg-red-600 h-2.5 rounded-full transition-all duration-1000 ease-out"
+                                                    style="width: 0%;" data-width="<?= $data['percentage'] ?>">
+                                                </div>
+                                            </div>
+                                            <span class="text-xs font-semibold text-gray-600 w-10 text-right">
+                                                <?= number_format($data['count']) ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="text-center p-8 text-gray-500">
+                                    <p>Tidak ada data topik yang cukup untuk ditampilkan.</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-gray-50 rounded-xl shadow-lg border border-gray-200 h-full">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                            <svg class="w-6 h-6 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2zM9 9h6m-6 4h4" />
+                            </svg>
+                            Distribusi Dataset Berdasarkan Format
+                        </h3>
+                        <div class="space-y-4">
+                            <?php if (!empty($formatDataForChart)): ?>
+                                <?php foreach ($formatDataForChart as $data): ?>
+                                    <div class="flex items-center">
+                                        <span class="w-2/5 text-sm font-medium text-gray-700"><?= $data['name'] ?></span>
+                                        <div class="w-3/5 flex items-center">
+                                            <div class="flex-grow bg-gray-200 rounded-full h-2.5 mr-3">
+                                                <div class="bg-red-600 h-2.5 rounded-full transition-all duration-1000 ease-out"
+                                                    style="width: 0%;" data-width="<?= $data['percentage'] ?>">
+                                                </div>
+                                            </div>
+                                            <span class="text-xs font-semibold text-gray-600 w-10 text-right">
+                                                <?= number_format($data['count']) ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="text-center p-8 text-gray-500">
+                                    <p>Tidak ada data format file yang cukup untuk ditampilkan.</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <section class="bg-white py-20" data-animate>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-extrabold text-gray-900">Topik Data</h2>
+                    <h2 id="all_data" class="text-3xl font-extrabold text-gray-900">Topik Data</h2>
                     <div class="mt-3 h-1 w-20 bg-red-600 mx-auto rounded-full"></div>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     <?php
-                    $topics = [
-                        'ekonomi' => ["name" => "Ekonomi dan Industri", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18M9.75 3v18M14.25 3v18M18.75 3v18M3.75 6.75h16.5" /></svg>'],
-                        'lingkungan' => ["name" => "Lingkungan dan SDA", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>'],
-                        'budaya' => ["name" => "Budaya dan Agama", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" /></svg>'],
-                        'sosial' => ["name" => "Sosial & Kesejahteraan", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.962a3.75 3.75 0 015.404 0L18 18.72m-7.5-2.962a3.75 3.75 0 00-5.404 0L6 18.72m-3.375 0a3 3 0 002.72 4.682A9.095 9.095 0 006 21a9.095 9.095 0 003.375-2.28m12.844-3.482a3.75 3.75 0 00-5.404-5.404M6.75 12a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0z" /></svg>'],
-                        'pembangunan' => ["name" => "Pembangunan Daerah", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M12 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" /></svg>'],
-                        'pendidikan' => ["name" => "Pendidikan", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.148 1.867 1.074 1.867 2.176v2.268a2.5 2.5 0 01-2.5 2.5H8.25a2.5 2.5 0 01-2.5-2.5v-2.268c0-1.102.83-2.028 1.867-2.176A48.347 48.347 0 0112 12.75z" /></svg>'],
-                        'pemerintahan' => ["name" => "Pemerintahan", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.311a7.5 7.5 0 01-7.5 0c-1.421-.218-2.68-.668-3.75-1.245M12 12.75V15m0 0V15M12 12.75v-2.25m0 2.25c-1.421.218-2.68-.668-3.75 1.245A7.5 7.5 0 0112 15m0 0c1.421-.218 2.68-.668 3.75-1.245A7.5 7.5 0 0012 15m-3.75-.75a3.75 3.75 0 017.5 0" /></svg>'],
-                        'ketertiban' => ["name" => "Ketertiban", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.602-3.751A11.959 11.959 0 0112 2.714z" /></svg>'],
-                        'pertahanan' => ["name" => "Pertahanan", "icon" => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v18h16.5V3H3.75zm8.25 9.75h4.5v-.75h-4.5v.75zm0 2.25h4.5v-.75h-4.5v.75zm0 2.25h4.5v-.75h-4.5v.75zM9 9.75h-1.5v-1.5H9v1.5z" /></svg>'],
-                    ];
-
+                    // Variabel $topics sudah didefinisikan di awal PHP, jadi kode ini aman
                     if ($topic_filter) {
                         echo '<a href="index.php#all-datasets" class="group flex items-center justify-center p-4 border-2 border-red-600 rounded-lg bg-red-600 text-white transition-colors duration-200">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 mr-2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -339,13 +547,9 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
         </section>
 
         <section class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center mb-8">
-                <div>
-                    <h2 class="text-3xl font-extrabold text-gray-900">Dataset Pilihan</h2>
-                    <div class="mt-2 h-1 w-20 bg-red-600 rounded-full"></div>
-                </div>
-                <a href="#all-datasets" class="text-sm font-semibold text-red-600 hover:text-red-800">Lihat Semua
-                    &rarr;</a>
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-gray-900">Dataset Pilihan</h2>
+                <div class="mt-3 h-1 w-20 bg-red-600 mx-auto rounded-full"></div>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white rounded-lg shadow-md border border-gray-200">
@@ -406,23 +610,20 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
         </section>
 
         <section id="all-datasets" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" data-animate>
-            <div class="flex flex-wrap justify-between items-center mb-8 gap-4">
-                <div>
-                    <h2 class="text-3xl font-extrabold text-gray-900">
-                        <?php
-                        if ($search)
-                            echo 'Hasil Pencarian';
-                        elseif ($topic_filter && isset($topics[$topic_filter]))
-                            echo 'Topik: ' . htmlspecialchars($topics[$topic_filter]['name']);
-                        else
-                            echo 'Jelajahi Semua Dataset';
-                        ?>
-                    </h2>
-                    <div class="mt-2 h-1 w-20 bg-red-600 rounded-full"></div>
-                </div>
-                <p class="text-sm text-gray-500">Menampilkan <?= count($pagedData) ?> dari <?= $total ?> hasil</p>
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-extrabold text-gray-900">
+                    <?php
+                    if ($search)
+                        echo 'Hasil Pencarian';
+                    elseif ($topic_filter && isset($topics[$topic_filter]))
+                        echo 'Topik: ' . htmlspecialchars($topics[$topic_filter]['name']);
+                    else
+                        echo 'Jelajahi Semua Dataset';
+                    ?>
+                </h2>
+                <div class="mt-3 h-1 w-20 bg-red-600 mx-auto rounded-full"></div>
+                <p class="text-sm text-gray-500 mt-4">Menampilkan <?= count($pagedData) ?> dari <?= $total ?> hasil</p>
             </div>
-
             <?php if (empty($pagedData)): ?>
                 <div class="text-center bg-white rounded-lg border border-gray-200 p-12">
                     <h3 class="mt-2 text-lg font-medium text-gray-900">⚠️ Tidak ada dataset ditemukan</h3>
@@ -436,6 +637,9 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
             <?php else: ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php foreach ($pagedData as $d): ?>
+                        <?php
+                            $current_stats = $stats[$d['id']] ?? [];
+                            ?>
                         <div
                             class="bg-white border border-gray-200 shadow-sm rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col">
                             <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2"><?= htmlspecialchars($d['title']) ?>
@@ -454,14 +658,14 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
                                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                                                 </path>
                                             </svg>
-                                            <span><?= $stats[$d['id']]['views'] ?? 0 ?></span>
+                                            <span><?= $current_stats['views'] ?? 0 ?></span>
                                         </span>
                                         <span class="flex items-center space-x-1">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                                             </svg>
-                                            <span><?= $stats[$d['id']]['downloads'] ?? 0 ?></span>
+                                            <span><?= $current_stats['downloads'] ?? 0 ?></span>
                                         </span>
                                     </div>
                                     <a href="dataset.php?id=<?= urlencode($d['id']) ?>"
@@ -522,7 +726,7 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
                     <ul class="mt-4 space-y-2">
                         <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">Datasets</a></li>
                         <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">Instansi</a></li>
-                        <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">Publikasi</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">Topik Data</a></li>
                         <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">Tentang Kami</a></li>
                     </ul>
                 </div>
@@ -567,6 +771,7 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
                     if (entry.isIntersecting) {
                         entry.target.classList.add("visible");
                     } else {
+                        // Anda dapat menghapus baris ini jika ingin animasi hanya dipicu sekali
                         entry.target.classList.remove("visible");
                     }
                 });
@@ -582,10 +787,37 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
                     heroImg.style.transform = `translateY(${offset}px)`;
                 }
             });
+
+            // Animasi Bar Chart
+            const chartBars = document.querySelectorAll('[data-width]');
+            chartBars.forEach(bar => {
+                // Atur lebar awal ke 0% agar animasinya terlihat
+                bar.style.width = '0%';
+            });
+
+            // Observer untuk memicu animasi saat chart terlihat
+            const chartObserver = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Query ulang di dalam entry.target agar hanya memproses bar di chart yang terlihat
+                        const bars = entry.target.querySelectorAll('[data-width]');
+                        bars.forEach(bar => {
+                            // Terapkan lebar yang sebenarnya untuk memicu CSS transition
+                            const actualWidth = bar.getAttribute('data-width');
+                            bar.style.width = actualWidth + '%';
+                        });
+                        // Hentikan observer setelah animasi dipicu
+                        chartObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            // Ambil elemen induk dari chart (section Statistik Distribusi Dataset yang baru)
+            const chartSection = document.querySelector('section.py-16.bg-white:not([id])');
+            if (chartSection) {
+                chartObserver.observe(chartSection);
+            }
         });
     </script>
-
-
 </body>
-
 </html>
