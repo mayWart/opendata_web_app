@@ -181,7 +181,7 @@ if ($dataUrl) {
 
 <body class="bg-gray-50 text-gray-800">
 
-    <header class="bg-white shadow-sm sticky top-0 z-50" data-animate>
+        <header class="bg-white shadow-sm sticky top-0 z-50" data-animate>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
                 <a href="index.php" class="flex items-center space-x-2">
@@ -190,12 +190,12 @@ if ($dataUrl) {
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3.75 12.75h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
                     </svg>
-                    <span class="text-xl font-bold text-gray-800">Portal Data</span>
+                    <span class="text-xl font-bold text-gray-800">Web Open-Data</span>
                 </a>
                 <nav class="hidden md:flex space-x-8">
                     <a href="index.php" class="text-sm font-medium text-gray-500 hover:text-red-600">Home</a>
-                    <a href="#" class="text-sm font-medium text-gray-500 hover:text-red-600">Instansi</a>
-                    <a href="#" class="text-sm font-medium text-gray-500 hover:text-red-600">Publikasi</a>
+                    <a href="#all-datasets" class="text-sm font-medium text-gray-500 hover:text-red-600">Dataset</a>
+                    <a href="#all_data" class="text-sm font-medium text-gray-500 hover:text-red-600">Topik Data</a>
                 </nav>
             </div>
         </div>
@@ -309,9 +309,60 @@ if ($dataUrl) {
         </div>
     </main>
 
-    <footer class="bg-white border-t mt-12" data-animate>
-        <div class="max-w-7xl mx-auto py-6 px-4 text-center text-sm text-gray-500">
-            © <?= date('Y') ?> Portal Data Terintegrasi
+<footer class="bg-white border-t mt-12" data-animate>
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="space-y-4">
+                    <a href="index.php" class="flex items-center space-x-2">
+                        <svg class="h-8 w-8 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 12.75h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+                        </svg>
+                        <span class="text-xl font-bold text-gray-800">Web Open-Data</span>
+                    </a>
+                    <p class="text-sm text-gray-500">Menyediakan akses data yang mudah, cepat, dan akurat untuk
+                        mendorong inovasi dan transparansi.</p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase">Navigasi</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">Datasets</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">Instansi</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">Topik Data</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">Tentang Kami</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase">Bantuan</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">FAQ</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">Hubungi Kami</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-red-600">Kebijakan Privasi</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase">Ikuti Kami</h3>
+                    <div class="flex mt-4 space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-red-600"><span class="sr-only">Twitter</span><svg
+                                class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path
+                                    d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                            </svg></a>
+                        <a href="https://www.instagram.com/friesszx?igsh=M2VwbDZwYjhxbTUz"
+                            class="text-gray-400 hover:text-red-600"><span class="sr-only">Instagram</span><svg
+                                class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 2.525c.636-.247 1.363-.416 2.427-.465C9.795 2.013 10.148 2 12.315 2zm-1.163 1.943c-1.042.045-1.71.21-2.225.41a3.001 3.001 0 00-1.13 1.13c-.2.515-.365 1.183-.41 2.225-.045 1.02-.058 1.349-.058 3.778s.013 2.758.058 3.778c.045 1.042.21 1.71.41 2.225a3.001 3.001 0 001.13 1.13c.515.2 1.183.365 2.225.41 1.02.045 1.349.058 3.778.058s2.758-.013 3.778-.058c1.042-.045 1.71-.21 2.225-.41a3.001 3.001 0 001.13-1.13c.2-.515.365-1.183.41-2.225.045-1.02.058-1.349-.058-3.778s-.013-2.758-.058-3.778c-.045-1.042-.21-1.71-.41-2.225a3.001 3.001 0 00-1.13-1.13c-.515-.2-1.183-.365-2.225-.41-1.02-.045-1.349-.058-3.778-.058zM12 6.865a5.135 5.135 0 100 10.27 5.135 5.135 0 000-10.27zm0 1.802a3.333 3.333 0 110 6.666 3.333 3.333 0 010-6.666zm5.338-3.205a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z"
+                                    clip-rule="evenodd" />
+                            </svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-200 pt-8 text-center">
+                <p class="text-sm text-gray-500">&copy; <?= date("Y") ?> Open Data Web App. All rights reserved.
+                </p>
+            </div>
         </div>
     </footer>
 
