@@ -277,7 +277,7 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Data Terintegrasi</title>
+    <title>Open Data Web App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
@@ -757,7 +757,7 @@ $lastUpdate = file_exists($cacheFile) ? date("d M Y H:i", filemtime($cacheFile))
                 </div>
             </div>
             <div class="mt-8 border-t border-gray-200 pt-8 text-center">
-                <p class="text-sm text-gray-500">&copy; <?= date("Y") ?> Portal Data Terintegrasi. All rights reserved.
+                <p class="text-sm text-gray-500">&copy; <?= date("Y") ?> Open Data Web App. All rights reserved.
                 </p>
             </div>
         </div>
